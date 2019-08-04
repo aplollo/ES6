@@ -13,7 +13,7 @@ ES6巩固
 ```
 
 ### 字符串扩展
-```
+```javascript
   计算长度：每两字节是一个长度;
   codePointAt()
   0xff
@@ -28,7 +28,7 @@ ES6巩固
 ```
 
 #### 标签模板
-```
+```javascript
   function abc(s, v1, v2) {
     return s + v1 + v2
   }
@@ -39,7 +39,7 @@ ES6巩固
 ```
 
 ### 数值扩展
-```
+```javascript
   Number.isFinite(15); //是否无穷
   Number.isNaN();
   Number.isInteger(); //是否整数
@@ -52,7 +52,7 @@ ES6巩固
 
 ### 数组扩展
 + Array.from
-```
+```javascript
   把伪数组/集合 转换为数组
   Array.from([1,2,3], function(item) {return item*2}) //function map
 ```
@@ -73,13 +73,351 @@ ES6巩固
   [1,2,3,4].fill(7,1,2) // [1,7,7,4] 从1开始（包括1）到3结束（不包括3）
 ```
 + entries\keys\values
-```
+```javascript
   keys() //返回下标
   values() //返回值
   entries() //返回键值
-
 ```
 + includes
 ```
   找寻存在返回布尔值
 ```
+
+### 函数扩展
+##### 默认值
+```
+  function(x, y = 'world') {
+    return y
+  }
+  //参数默认值后面只能跟赋值默认值的参数
+
+```
+##### 作用域
+```
+  let x = 'kill';
+  function test (x, y=x) {
+    console.log(x, y)
+  }
+  test('kill')
+```
+
+##### rest参数
+```javascript
+  function test1(...arg) {
+    for(let v of arg) {
+      console.log('rest',v)
+    }
+  }
+  test(1,2,3,4,'a')
+  console.log('a',[...1,2,4]) // a 1 2 4
+```
+
+**比对ES5中的argument 分析不同**
+
+####箭头函数
+
+```javascript
+let arrow = v => v*2;
+let arrow = () => 5;
+```
+
+#### 伪调用
+
+```
+提升性能：一个函数依赖于另一个函数的形式
+```
+
+
+
+### 对象扩展（Object）
+
+#### 简洁表示法
+
+```javascript
+let o = 1;
+let k = 2;
+let obj = {
+	o,k
+}
+let es6_method = {
+	hello() {
+		console.log('hello gaea')
+	}
+}
+```
+
+#### 属性表达式
+
+```javascript
+let a = 'b';
+let es6_obj = {
+	[a] = 'c'
+}
+```
+
+
+
+#### 扩展运算符
+
+```
+let { a,b,...c } = {'aaa','bbb','ccc','ddd','eee','fff'}
+```
+
+
+
+#### 新增API
+
+```javascript
+console.log(Object.is('abc','abc') // 判断是否全等 相当于用 === 判断
+Object.assign({'a':'b'},{'b':'c'}) // 浅拷贝 只拷贝自身 不拷贝继承属性和不可枚举的属性
+entries()
+let test = {k:123,0:456};
+for (let [key,value] of Object.entries(test)) {
+	console.log([key,value])
+}
+```
+
+### Symbol
+
++ ##### 提供一个独一无二的值：声明的值永不相等
+
+```javascript
+// 声明的变量独一无二
+let a1 = Symbol();
+let a2 = Symbol();
+console.log(a1 === a2) // false
+// 如果要返回我们声明的值
+let a3 = Symbol.for('a3') 
+let a4 = Symbol.for('a3') 
+console.log(a3 === a4 )
+// a3相当于一个key值 当我们有该值时 for方法会去全局变量中找寻是否已声明 已声明则返回 否则声明该值
+```
+
+
+
+```javascript
+let a = Symbol.for('abc');
+let obj = {
+	[a]:123,
+	'abc':456,
+	c: 789
+};
+console.log(obj)
+for (let [key,value] of Object.entries(obj)) {
+	console.log([key,value]) //获取不到通过Symbol声明的abc
+}
+
+Object.getOwnPropertySymbols(obj).forEach(function(item) {
+	console.log(obj[item]) //获取通过Symbol声明的
+})
+
+Reflect.ownKeys(obj).forEach(item => {
+	console.log(item,obj[item])
+})
+```
+
+### set-map 数据结构
+
+##### Set的用法：元素必须是唯一的
+
+```javascript
+let list = new Set();
+list.add(5);
+list.add(7);
+console.log(list.size) // 2
+
+let arr = [1,3,5,7];
+let list1 = new Set(arr);
+console.log(list.size) // 4
+利用set的元素唯一性可以去重
+
+let arrs = ['add','delete','clear','has'];
+let list2 = new Set(arrs);
+
+list2.has('add') //true
+list2.delete('add')
+list2.clear()
+// key value值相同
+```
+
+
+
+##### WeakSet的用法
+
+```javascript
+let weakList = new WeakSet();
+// 只支持对象
+// 弱引用 不会检测该对象在其他地方有没有用过 不会与垃圾回收机制挂钩 不是拷贝 只是地址引用
+let arg = {};
+weakList.add(arg) // 不报错
+weakList.add(2) // 报错
+// 没有clear方法 不能遍历 没有size属性
+```
+
+
+
+##### Map的用法
+
+```javascript
+let map = new Map();
+let arr = ['123'];
+map.set(arr, 456) //添加元素
+map.get(arr) //获取元素
+```
+
+
+
+```javascript
+let map = new Map([['a',123],['b',456]]);
+console.log('map args', map)
+map.size // 2
+map.delete('a')
+map.clear()
+// 遍历与set一样
+```
+
+
+
+##### WeakMap的用法
+
+```javascript
+let weakList = new WeakMap();
+// 接收key值必须为对象
+// 没有size属性 没有clear属性 不能遍历
+```
+
+
+
+### Proxy 和 Reflect
+
+##### proxy 拦截/代理
+
+```javascript
+在代理层根据业务逻辑自定义
+let obj = {
+	time: '2019-08-04',
+  name:'gaea',
+  _id: 0810,
+}
+let monitor = new Proxy(obj, {
+	get(target, key) {
+  	return target[key].replace('2020','2019)
+  },
+	set(target, key, value) {
+  	if(key == 'name') {
+    	return target[key] = value
+    } else {
+    	return target[key]
+    }
+  },
+  // 拦截 key in object 操作
+  // 判断当前对象是否有某个属性
+  has(target, key) {
+  	if(key == 'name'){
+    	return target[key]
+    } else {
+    	return false
+    }
+  },
+  // 删除
+  deleteProperty(target,key) {
+  	if(key.indexOf('_') > -1) {
+    	delete target[key]
+      return true
+    } else {
+    	return target[key]
+    }
+  }
+  // 拦截Object.keys, Object.getOwnPropertySymbols,Object.getOwnPropertNames
+  ownKeys(target) {
+  	return Object.keys(target).filter(item => item!= 'time')
+  }
+})
+Reflect与Proxy用法基本一致
+```
+
+```javascript
+// 实战：
+
+function validator(target, validator) {
+	return new Proxy(target, {
+  	_validator: validator,
+    set(target, key, value, proxy) {
+    	if(target.hasOwnProperty(key)) {
+      	let va = this._validator[key];
+        if(!!va(value)) {
+        	return Reflect.set(target, key, value, proxy)
+        } else {
+        	throw Error(`不能设置${key}到${value}`)
+        }
+      }
+    }
+  })
+}
+
+const personValidators = {
+	name(val) {
+  	return typeof val === 'string'
+  },
+  age(val) {
+  	return typeof val === 'nubmer' && val > 18
+  }
+}
+
+class Peroson {
+	constructor(name,age) {
+  	this.name = name;
+    this.age = age;
+    return validator(this,personValidators)
+  }
+}
+const person = new Person('apollo',24);
+person.name = 48 //error
+person.name = 'gaea';
+person.age = 23
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
