@@ -377,6 +377,298 @@ person.name = 'gaea';
 person.age = 23
 ```
 
+### 类与对象
+
+```javascript
+class Perent() {
+	constructor(name='gaea') {
+  	this.name = name
+  }
+}
+// 继承 extends
+class child extends Parent() {
+	constructor(name='apollo') {
+  	super(name) 
+    // 如果super括号为空，那么全部取父类的默认值：super放在第一行 如果定义子类独有的属性则定义放在super后
+  }
+}
+```
+
+```javascript
+// getter setter
+class Perent() {
+	constructor(name='gaea') {
+  	this.name = name
+  }
+  get heart() {
+  	return my + this.name
+  }
+  set heart(value) {
+  	this.name = value
+  }
+}
+let v = new Peroson();
+v.herat
+v.heart = 'is belong to gaea';
+```
+
+```javascript
+ // 静态方法 
+ class Perent() {
+	constructor(name='gaea') {
+  	this.name = name
+  }
+  static tell() {
+  	console.log('hold on, i protect you)
+  }
+}
+Person.tell()
+// 静态属性
+Person.peace = 'peaceful';
+```
+
+###Promise
+
+```javascript
+// Promise
+// 基本定义
+{
+	let ajax = function(callback) {
+  	console.log('inplement1');
+    setTimeout(function(){
+    	callback && callback()
+    },1000)
+  }
+  ajax(function(){
+  	console.log('inplement2')
+  })
+}
+
+{
+	let ajax = function() {
+  	console.log('inplement3')
+    return new Pormise(function(resolve,reject){
+    	setTimeout(function(){
+        resolve()
+      },1000)
+    })
+  }
+  ajax().then(function(){
+  	console.log('inplement4')
+    return new Promise(function(resolve, reject){
+    	setTimeout(function(){
+      	resolve()
+      }, 2000)
+    })
+  })
+}
+```
+
+##### Promise.all  &&  Promise.race
+
+```javascript
+function loadImg(src) {
+	return new Pormise((resolve, reject)) => {
+  	let img = document.createElement('img');
+    img.src = src;
+    img.onload = function(){
+    	resolve(img)
+    };
+    img.onerror = function(err){
+    	reject(err)
+    }
+  }
+}
+function showImgs(imgs) {
+	imgs.forEach((img) => {
+  	document.body.append(img)
+  }
+}
+// 三张图片全部加载完毕再执行show
+Promise.all([
+	loadImg('a.png'),
+	loadImg('b.png'),
+	loadImg('c.png'),
+]).then(showImgs)
+// 一张图片加载完毕就执行show
+Promise.race([
+	loadImg('a.png'),
+	loadImg('b.png'),
+	loadImg('c.png'),
+]).then(showImgs)
+
+```
+
+### Iterator  &&  fro ... of
+
+```javascript
+// for of 就是利用iterator的特性来对数组/对象进行循环调用
+let arr = ['hello','world'];
+let map = arr[Symbol.iterator]();
+console.log(map.next());
+console.log(map.next());
+console.log(map.next());
+
+let obj = {
+	start: [1,3,5],
+  end: [7, 9, 11],
+  [Symbol.interator](){
+  	let self = this;
+    let index = 0;
+    let arr = self.start.concat(self.end);
+    let len = arr.length;
+    return {
+    	next() {
+      	if(index< len) {
+        	return {
+          	value: arr[index++],
+            done: false
+          }
+        } else {
+        	return {
+          	value: arr[index++],
+            done: true
+          }
+        }
+      }
+    }
+  }
+}
+for (let key of obj) {
+	console.log(key)
+}
+
+```
+
+### Generator
+
+```javascript
+// 异步编程的一种解决方案
+// 基本定义
+let tell = function* () {
+	yield:'a',
+  yield:'b',
+	return: 'c'
+}
+let k = tell();
+console.log(k.next()) // {value: a,done:false}
+console.log(k.next()) // {value: b,done:false}
+console.log(k.next()) // {value: c,done: true}
+console.log(k.next()) // {value:undefined,done:true}
+// 遇到yield则停住不执行 执行yield之前的; 执行next()开始执行第一个yield
+```
+
+```javascript
+// Generator是一个使函数内部看上去类似于异步的操作过程 
+// Generator就是一个遍历器生成的函数 可以直接赋值给Symbol.intraotr接口上
+// 任意一个对象的interator接口都是在Symbol.intrator属性上
+{
+	let obj = {};
+  obj[Symbol.iterator]= function* (){
+  	yield 1;
+    yield 2;
+    yield 3;
+  }
+  for(let value of obj) {
+  	console.log(value)
+  }
+}
+```
+
+```javascript
+// 状态机
+let state = function* () {
+	while(1) {
+  	yield 'a';
+    yield 'b';
+    yield 'c';
+  }
+}
+let status = state();
+console.log(status.next()); //a
+console.log(status.next()); //b
+console.log(status.next()); //c
+console.log(status.next()); //a
+console.log(status.next()); //b
+console.log(status.next()); //c
+```
+
+### async await(Generator语法糖)
+
+```javascript
+let state = async function () {
+	while(1) {
+  	await 'a';
+    await 'b';
+    await 'c';
+  }
+}
+let status = state();
+console.log(status.next()); //a
+console.log(status.next()); //b
+console.log(status.next()); //c
+console.log(status.next()); //a
+console.log(status.next()); //b
+console.log(status.next()); //c
+```
+
+##### 抽奖逻辑
+
+```javascript
+let draw = function(count) {
+	// 具体抽奖逻辑
+  console.log(`剩余${count}次`);
+}
+let residue = function* (count) {
+	while(count>0){
+  	count--;
+    yield draw(count)
+  }
+}
+
+let star = residue(5);
+let btn = document.createElement('button');
+btn.id = 'start';
+btn.textContent = '抽奖';
+document.body.appendChild(btn);
+document.getELementById('start').addEventListener('click',function(){
+	star.next();
+},false)
+```
+
+```javascript
+// 长轮询
+let ajax = function* (){
+	yield new Promise(function(resolve,reject){
+  	setTimeout(function () {
+    	resolve({code: 0})
+    }, 200)
+  })
+}
+
+let pull = function() {
+	let generator = ajax();
+  let step = genrator.next();
+  step.value.then(function(d){
+  	if(d.code!=0) {
+    	setTimeout(function() {
+      	console.log('waiting');
+        pull()
+      },200)
+    } else {
+    	console.log(d)
+    }
+  })
+}
+pull()
+```
+
+
+
+
+
+
+
 
 
 
