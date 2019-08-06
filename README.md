@@ -114,7 +114,7 @@ ES6巩固
 
 **比对ES5中的argument 分析不同**
 
-####箭头函数
+#### 箭头函数
 
 ```javascript
 let arrow = v => v*2;
@@ -401,7 +401,7 @@ class Perent() {
   	this.name = name
   }
   get heart() {
-  	return my + this.name
+  	return 'my' + this.name
   }
   set heart(value) {
   	this.name = value
@@ -427,7 +427,7 @@ Person.tell()
 Person.peace = 'peaceful';
 ```
 
-###Promise
+### Promise
 
 ```javascript
 // Promise
@@ -561,7 +561,7 @@ console.log(k.next()) // {value:undefined,done:true}
 ```javascript
 // Generator是一个使函数内部看上去类似于异步的操作过程 
 // Generator就是一个遍历器生成的函数 可以直接赋值给Symbol.intraotr接口上
-// 任意一个对象的interator接口都是在Symbol.intrator属性上
+// 任意一个对象的interator接口都是在Symbol.interator属性上
 {
 	let obj = {};
   obj[Symbol.iterator]= function* (){
