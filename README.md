@@ -663,7 +663,81 @@ let pull = function() {
 pull()
 ```
 
+### 修饰器 Decorator
 
++ #####函数、用于修改**类**的行为
+
+```javascript
+let readonly = function(target, name, descriptor) {
+  // target 类本身 name 要修改的属性名 descriptor 属性的描述对象
+	descriptor.writeabel = false; // 不可写
+  return descriptor
+}
+class Test{
+	@readonly
+  time(){
+  	return '2017-03-11'
+  }
+}
+let test = new Test();
+console.log(test.time())
+```
+
+```javascript
+let typename = function(target, name, descriptor) {
+	target.myname = 'gaea'; // 此时myname为静态属性
+}
+@typename
+class Test{
+
+}
+console.log(Test.myname) // 所以用类来引用静态属性
+```
+
+```javascript
+第三方库: core-decorators
+```
+
+```javascript
+埋点：
+let log =(type)=> {
+	return function(target, name, descriptor) {
+  	let src_method = descriptor.value;
+    descriptor.value = (...arg) => {
+    	src_method.apply(target,arg)
+      console.info(`log ${type}`);
+    }
+  }
+}
+class AD{
+	@log('show')
+  show() {
+  	console.log('ad is show')
+  }
+  @log('click')
+  click(){
+  	console.log('ad is clicked')
+  }
+}
+
+let ad = new AD();
+ad.show();
+ad.click();
+```
+
+### Module模块化
+
+```javascript
+export function(){}
+import * as all from '../xxx/xxx';
+
+export default {
+	xxx,
+  xx,
+  x
+}
+import all from '../xxx/xxx'
+```
 
 
 
