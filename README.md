@@ -70,7 +70,7 @@ ES6巩固
 + fill
 ```
   [1,2,3].fill(7) //[7,7,7]
-  [1,2,3,4].fill(7,1,2) // [1,7,7,4] 从1开始（包括1）到3结束（不包括3）
+  [1,2,3,4].fill(7,1,3) // [1,7,7,4] 从1开始（包括1）到3结束（不包括3）
 ```
 + entries\keys\values
 ```javascript
@@ -560,7 +560,7 @@ console.log(k.next()) // {value:undefined,done:true}
 
 ```javascript
 // Generator是一个使函数内部看上去类似于异步的操作过程 
-// Generator就是一个遍历器生成的函数 可以直接赋值给Symbol.intraotr接口上
+// Generator就是一个遍历器生成的函数 可以直接赋值给Symbol.iterator接口上
 // 任意一个对象的interator接口都是在Symbol.interator属性上
 {
 	let obj = {};
@@ -669,7 +669,7 @@ pull()
 
 ```javascript
 let readonly = function(target, name, descriptor) {
-  // target 类本身 name 要修改的属性名 descriptor 属性的描述对象
+  // target 类本身; name 要修改的属性名; descriptor 属性的描述对象;
 	descriptor.writeabel = false; // 不可写
   return descriptor
 }
